@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- TITLE + CHARSET + DESCRIPTION + VIEWPORT + FAVICON -->
+    <title>JS Camera PWA</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Offline Javascript Camera App">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <link rel="icon" href="assets/favicon.png" type="image/png">
+
+    <!-- WEB APP MANIFEST -->
+    <!-- https://web.dev/add-manifest/ -->
+    <link rel="manifest" href="js-cam-manifest.json">
+
+    <!-- ANDROID + CHROME + APPLE + WINDOWS APP -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="white">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="JS Camera">
+    <meta name="msapplication-TileImage" content="icon-512.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+
+    <!-- STYLESHEET + JAVASCRIPT -->
+    <link rel="stylesheet" href="assets/js-cam.css">
+    <script async src="assets/js-cam.js"></script>
+  </head>
+  <body>
+    <!-- (A) CAMERA SCREEN -->
+    <div id="jcam" class="ninja">
+      <!-- (A1) VIDEO LIVE FEED -->
+      <video id="jcamVid" autoplay></video>
+
+      <!-- (A2) BOTTOM CONTROLS -->
+      <div id="jcamBtn">
+        <button id="jcamPics" disabled>
+          <span class="mi">collections</span>
+        </button>
+        <button id="jcamSnap" disabled>
+          <span class="mi">photo_camera</span>
+        </button>
+      </div>
+
+      <!-- (A3) SNAPSHOT FEEDBACK - JUST A WHITE FLASH -->
+      <div id="jcamSnapped" class="ninja"></div>
+    </div>
+
+    <!-- (B) GALLERY SCREEN -->
+    <div id="jgal" class="ninja">
+      <!-- (B1) GALLERY HEADER -->
+      <div id="jgalHead">
+        <div id="jgalHTitle">My Pictures</div>
+        <button id="jgalHBack"><span class="mi">reply</span></button>
+      </div>
+
+      <!-- (B2) GALLERY PICTURES -->
+      <div id="jgalWrap"></div>
+    </div>
+  </body>
+</html>

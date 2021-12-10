@@ -1,0 +1,124 @@
+/* (A) FONTS */
+/* GOOGLE MATERIAL ICONS - https://fonts.google.com/icons */
+* { font-family: arial, sans-serif; }
+html, body, input, button, textarea, select { font-size: 18px; }
+@font-face {
+  font-family: "Material Icons";
+  src: url(maticon.woff2) format("woff2");
+}
+.mi {
+  font-family: "Material Icons";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 30px;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased
+}
+
+/* (B) ENTIRE PAGE */
+html, body {
+  padding: 0;
+  margin: 0 auto;
+  max-width: 1000px;
+  background: #000;
+}
+input[type=button], input[type=submit], button { cursor: pointer; }
+.err {
+  background: #300;
+  color: #fff;
+  padding: 5px;
+}
+.ninja { display: none !important; }
+
+/* (C) CAMERA SCREEN */
+/* (C1) CAMERA WRAPPER */
+#jcam {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* (C2) CAMERA VIDEO TAG */
+#jcamVid {
+  flex: 2;
+  width: 100%;
+  /*object-fit: none cover contain fill scale-down;*/
+}
+
+/* (C3) CAMERA CONTROLS */
+#jcamBtn {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  height: 150px;
+}
+#jcamBtn button {
+  background: 0;
+  border: 0;
+  color: #fff;
+}
+#jcamBtn button:disabled { color: #404040; }
+#jcamSnap .mi { font-size: 64px; }
+
+/* (C4) SNAPSHOT FEEDBACK */
+#jcamSnapped {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #fff;
+}
+
+/* (D) GALLERY SCREEN */
+/* (D1) GALLERY WRAPPER */
+#jgal {}
+
+/* (D2) GALLERY HEADER */
+#jgalHead {
+  position: sticky;
+  display: flex;
+  color: #fff;
+  background: #2f6ab3;
+  padding: 20px;
+}
+#jgalHTitle {
+  font-size: 26px;
+  flex-grow: 1;
+}
+#jgalHBack {
+  background: 0;
+  border: 0;
+  color: #fff;
+}
+
+/* (D3) GALLERY PICTURES */
+#jgalWrap {
+  display: grid;
+  grid-gap: 10px;
+  padding: 10px;
+  grid-template-columns: repeat(2, auto);
+}
+#jgalWrap img {
+  width: 100%;
+  object-fit: cover;
+}
+#jgalWrap .pic {
+  position: relative;
+}
+#jgalWrap .btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+#jgalWrap .btn button {
+  color: #fff;
+  border: 0;
+  background: 0;
+  padding: 10px;
+}
