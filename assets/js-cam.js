@@ -155,7 +155,10 @@ var gallery = {
   // (B) DELETE AN IMAGE
   del : (pic) => { if (confirm("Delete image?")) {
     caches.open(cam.cPics).then((cache) => {
-      cache.delete(pic).then((res) => { gallery.list(); });
+      cache.delete(pic).then((res) => {
+        gallery.list();
+        cb.info("Image deleted");
+      });
     });
   }},
 

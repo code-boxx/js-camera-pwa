@@ -20,6 +20,7 @@ cFiles = [
 
 // (B) CREATE/INSTALL CACHE
 self.addEventListener("install", (evt) => {
+  self.skipWaiting();
   evt.waitUntil(
     caches.open(cName)
     .then((cache) => { return cache.addAll(cFiles); })
