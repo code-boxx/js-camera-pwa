@@ -1,145 +1,118 @@
-var jsc = {
-  // (A) GLOBAL SUPPORT FUNCTION - GENERATE HTML ERROR MESSAGE
+var cam = {
+  // (A) HELPER FUNCTION TO GENERATE ERROR MESSAGE
   err : (msg) => {
     let row = document.createElement("div");
+    row.className = "error";
     row.innerHTML = msg;
-    row.className = "err";
-    document.body.prepend(row);
+    document.getElementById("cb-main").appendChild(row);
   },
 
-  // (B) TOGGLE BETWEEN "C"AMERA & "G"ALLERY SCREEN
-  toggle : (screen) => {
-    let cam = document.getElementById("jcam"),
-        gal = document.getElementById("jgal");
-    if (screen=="C") {
-      gal.classList.add("ninja");
-      cam.classList.remove("ninja");
-    } else if (screen=="G") {
-      cam.classList.add("ninja");
-      gal.classList.remove("ninja");
-    } else {
-      cam.classList.add("ninja");
-      gal.classList.add("ninja");
+  // (B) INIT APP
+  cPics : "MyPics", // cache to store pictures
+  ready : 0, // number of components that are ready
+  init : (ready) => {
+    // (B1) ALL CHECKS & COMPONENTS GOOD TO GO?
+    if (ready==1) {
+      cam.ready++;
+      if (cam.ready==3) { cb.load(); }
+    }
+
+    // (B2) REQUIREMENT CHECKS & SETUP
+    else {
+      // (B2-1) REQUIREMENT - MEDIA DEVICES
+      let pass = true;
+      if (!"mediaDevices" in navigator) {
+        cam.err("Your browser does not support media devices.");
+        pass = false;
+      }
+
+      // (B2-2) REQUIREMENT - SERVICE WORKER
+      if (!"serviceWorker" in navigator) {
+        cam.err("Your browser does not support service workers.");
+        pass = false;
+      }
+
+      // (B2-3) REQUIREMENT - CACHE STORAGE
+      if (!"caches" in window) {
+        cam.err("Your browser does not support cache storage.");
+        pass = false;
+      }
+
+      // (B2-4) SERVICE WORKER
+      if (pass) {
+        navigator.serviceWorker.register("js-cam-sw.js")
+        .then((reg) => { cam.init(1); })
+        .catch((err) => {
+          cam.err("Service worker init error - " + evt.message);
+          console.error(err);
+        });
+      }
+
+      // (B2-5) CACHE STORAGE FOR PICTURES
+      if (pass) {
+        caches.open(cam.cPics)
+        .then((cache) => { cam.init(1); })
+        .catch((err) => {
+          cam.err("Failed to create cache storage.");
+          console.error(err)
+        });
+      }
+
+      // (B2-6) GET CAMERA PERMISSION
+      if (pass) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => { cam.init(1); })
+        .catch((err) => {
+          cam.err("Please attach a webcam and give app permission.");
+          console.error(err);
+        });
+      }
     }
   },
 
-  // (C) INIT PART 1 - REQUIREMENTS CHECK
-  iniA : () => {
-    // (C1) REQUIREMENTS INIT
-    let pass = true;
-
-    // (C2) REQUIREMENT - MEDIA DEVICES
-    if (!"mediaDevices" in navigator) {
-      jsc.err("Your browser does not support media devices.");
-      pass = false;
-    }
-
-    // (C3) REQUIREMENT - SERVICE WORKER
-    if (!"serviceWorker" in navigator) {
-      jsc.err("Your browser does not support service workers.");
-      pass = false;
-    }
-
-    // (C4) REQUIREMENT - CACHE STORAGE
-    if (!caches) {
-      jsc.err("Your browser does not support cache storage.");
-      pass = false;
-    }
-
-    // (C5) NO GO
-    if (!pass) { return; }
-
-    // (C6) OK - NEXT INIT
-    jsc.iniB();
-  },
-
-  // (D) INIT PART 2 - SERVICE WORKER + CACHE + CAM ACCESS
-  cPics : "MyPics", // CACHE FOR PICTURES
-  iniB : () => {
-    // (D1) SERVICE WORKER
-    navigator.serviceWorker.register("js-cam-sw.js")
-    .then((reg) => { jsc.iniC(); })
-    .catch((err) => {
-      jsc.err("Service worker init error - " + evt.message);
-      console.error(err);
-    });
-
-    // (D2) CACHE STORAGE FOR PICTURES
-    caches.open(jsc.cPics)
-    .then((cache) => { jsc.iniC(); })
-    .catch((err) => {
-      jsc.err("Failed to create cache storage.");
-      console.error(err)
-    });
-
-    // (D3) GET CAMERA PERMISSION
+  // (C) START CAMERA LIVE FEED & ENABLE CONTROLS
+  start : () => {
     navigator.mediaDevices.getUserMedia({ video: true })
     .then((stream) => {
-      document.getElementById("jcamVid").srcObject = stream;
-      jsc.iniC();
+      cam.snapfeed = document.getElementById("cam-feed");
+      cam.snapflash = document.getElementById("cam-flash");
+      cam.snapfeed .srcObject = stream;
+      document.getElementById("cam-pics").disabled = false;
+      document.getElementById("cam-snap").disabled = false;
     })
     .catch((err) => {
-      jsc.err("Please attach a webcam and give app permission.");
+      alert("OPPS. Error while initializing camera.")
       console.error(err);
     });
   },
 
-  // (E) INIT PART 3 - ENABLE HTML INTERFACE
-  ready : 0, // NUMBER OF READY COMPONENTS
-  iniC : () => { jsc.ready++; if (jsc.ready==3) {
-    // (E1) TAKE PICTURE
-    let btn = document.getElementById("jcamSnap");
-    btn.onclick = jsc.snap;
-    btn.disabled = false;
-
-    // (E2) SHOW GALLERY
-    btn = document.getElementById("jcamPics");
-    btn.onclick = jsc.list;
-    btn.disabled = false;
-
-    // (E3) BACK TO CAMERA
-    btn = document.getElementById("jgalHBack");
-    btn.onclick = () => { jsc.toggle("C"); };
-    btn.disabled = false;
-
-    // (E4) ALL GOOD
-    jsc.toggle("C");
-  }},
-
-  // (F) SUPPORT - SNAPSHOT FEEDBACK
-  snaptime : null,
-  snapped : (on) => {
-    let snapped = document.getElementById("jcamSnapped");
-    if (on) {
-      clearTimeout(jsc.snaptime);
-      snapped.classList.remove("ninja");
-      jsc.snaptime = setTimeout(jsc.snapped, 100);
-    } else {
-      snapped.classList.add("ninja");
-      jsc.snaptime = null;
-    }
-  },
-
-  // (G) TAKE A PICTURE
+  // (D) SNAP!
+  snapfeed : null, // html video
+  snapflash : null, // html flash
+  snaptimer : null, // flash timer
   snap : () => {
-    // (G1) SNAP FEEDBACK
-    jsc.snapped(1);
+    // (D1) FEEDBACK
+    clearTimeout(cam.snaptimer);
+    cam.snapflash.classList.add("show");
+    cam.snaptimer = setTimeout(() => {
+      cam.snapflash.classList.remove("show");
+      clearTimeout(cam.snaptimer);
+    }, 100);
 
-    // (G2) CAPTURE VIDEO FRAME TO CANVAS
-    let vid = document.getElementById("jcamVid"),
-        canvas = document.createElement("canvas"),
+    // (D2) CAPTURE VIDEO FRAME TO CANVAS
+    let canvas = document.createElement("canvas"),
         ctx = canvas.getContext("2d"),
-        vWidth = vid.videoWidth,
-        vHeight = vid.videoHeight;
+        vWidth = cam.snapfeed.videoWidth,
+        vHeight = cam.snapfeed.videoHeight;
     canvas.width = vWidth;
     canvas.height = vHeight;
-    ctx.drawImage(vid, 0, 0, vWidth, vHeight);
+    ctx.drawImage(cam.snapfeed, 0, 0, vWidth, vHeight);
 
-    // (G3) PICTURE TO CACHE STORAGE
+    // (D3) PICTURE TO CACHE STORAGE
     canvas.toBlob((imgBlob) => {
       let url = URL.createObjectURL(imgBlob);
       fetch(url).then((res) => {
-        caches.open(jsc.cPics).then(async (cache) => {
+        caches.open(cam.cPics).then(async (cache) => {
           // GET NEXT RUNNING NUMBER
           let i = 1;
           while (true) {
@@ -154,64 +127,45 @@ var jsc = {
         });
       });
     });
-  },
+  }
+};
 
-  // (H) LIST GALLERY
+var gallery = {
+  // (A) LIST GALLERY
   list : () => {
-    // (H1) SWITCH TO GALLERY SCREEN
-    let wrap = document.getElementById("jgalWrap");
-    wrap.innerHTML = "";
-    jsc.toggle("G");
+    // (A1) GET TEMPLATE + WRAPPER
+    let wrap = document.getElementById("gallery-pics"),
+        template = document.getElementById("gallery-template").content;
 
-    // (H2) DRAW IMAGES
-    let pic, img, btn, del, dl;
-    caches.open(jsc.cPics).then((cache) => {
+    // (A2) DRAW IMAGES
+    wrap.innerHTML = "";
+    caches.open(cam.cPics).then((cache) => {
       cache.keys().then((keys) => {
         keys.forEach((req) => {
-          pic = document.createElement("div");
-          img = document.createElement("img");
-          btn = document.createElement("div");
-          del = document.createElement("button");
-          dl = document.createElement("button");
-
-          pic.className = "pic";
-          btn.className = "btn";
-          img.src = req.url;
-          del.innerHTML = "<span class='mi'>delete</span>";
-          dl.innerHTML = "<span class='mi'>file_download</span>";
-          del.onclick = () => { jsc.del(req.url); };
-          dl.onclick = () => { jsc.get(req.url); };
-
-          btn.appendChild(del);
-          btn.appendChild(dl);
-          pic.appendChild(img);
-          pic.appendChild(btn);
-          wrap.appendChild(pic);
+          let item = template.cloneNode(true);
+          item.querySelector(".img").src = req.url;
+          item.querySelector(".del").onclick = () => { gallery.del(req.url); };
+          item.querySelector(".get").onclick = () => { gallery.get(req.url); };
+          wrap.appendChild(item);
         });
       });
     });
   },
 
-  // (I) DELETE AN IMAGE
-  del : (pic, go) => {
-    if (go) {
-      caches.open(jsc.cPics).then((cache) => {
-        cache.delete(pic).then((res) => {
-          jsc.list();
-        });
-      })
-    } else { if (confirm("Delete image?")) {
-      jsc.del(pic, 1);
-    }}
-  },
+  // (B) DELETE AN IMAGE
+  del : (pic) => { if (confirm("Delete image?")) {
+    caches.open(cam.cPics).then((cache) => {
+      cache.delete(pic).then((res) => { gallery.list(); });
+    });
+  }},
 
-  // (J) DOWNLOAD AN IMAGE
+  // (C) DOWNLOAD AN IMAGE
   get : (pic) => {
     caches.match(pic)
     .then((res) => { return res.blob(); })
     .then((imgBlob) => {
       let a = document.createElement("a"),
-          url = URL.createObjectURL(imgBlob);
+      url = URL.createObjectURL(imgBlob);
       a.href = url;
       a.download = "pic.png";
       a.click();
@@ -220,4 +174,4 @@ var jsc = {
     });
   }
 };
-window.addEventListener("load", jsc.iniA);
+window.addEventListener("load", cam.init);

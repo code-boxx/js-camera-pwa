@@ -1,13 +1,21 @@
 // (A) FILES TO CACHE
 const cName = "JSCam",
 cFiles = [
+  // (A1) ICONS + FONTS
   "assets/favicon.png",
   "assets/icon-512.png",
-  "assets/js-cam.css",
-  "assets/js-cam.js",
   "assets/maticon.woff2",
+  // (A2) CSS
+  "assets/js-cam.css",
+  // (A3) JS
+  "assets/cb.js",
+  "assets/js-cam.js",
+  // (A4) MANIFEST
   "js-cam-manifest.json",
-  "js-cam.html"
+  // (A5) PAGES
+  "js-cam.html",
+  "gallery.inc",
+  "home.inc"
 ];
 
 // (B) CREATE/INSTALL CACHE
