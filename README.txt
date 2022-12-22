@@ -1,25 +1,7 @@
-## JS CAMERA PWA
-This is a Camera Progressive Web App (PWA) made with pure HTML, CSS, Javascript. Yes, it is installable and serverless - Capable of running offline completely.
-<br><br>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+LICENSE
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-## SCREENSHOTS
-<p float="left">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-1.jpg">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-2.jpg">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-3.jpg">
-</p><br>
-
-## REQUIREMENTS
-1) "Grade A" browser. With support for service worker, indexed database, cache storage.
-2) https:// is required for the features to work.
-3) http://localhost works fine for testing too.
-<br><br>
-
-## DOCUMENTATION
-Please visit https://code-boxx.com/javascript-camera-pwa/ for the documentation.
-<br><br>
-
-## LICENSE
 Copyright by Code Boxx
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,3 +21,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+MORE
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Please visit https://code-boxx.com/ for more!

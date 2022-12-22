@@ -1,180 +1,121 @@
 var cam = {
-  // (A) HELPER FUNCTION TO GENERATE ERROR MESSAGE
-  err : (msg) => {
-    let row = document.createElement("div");
-    row.className = "error";
-    row.innerHTML = msg;
-    document.getElementById("cb-main").appendChild(row);
-  },
-
-  // (B) INIT APP
-  cPics : "MyPics", // cache to store pictures
-  ready : 0, // number of components that are ready
-  init : (ready) => {
-    // (B1) ALL CHECKS & COMPONENTS GOOD TO GO?
-    if (ready==1) {
-      cam.ready++;
-      if (cam.ready==3) { cb.load(); }
+  // (A) INIT APP
+  cache : null, // pictures cache storage
+  aClick : null, // click sound
+  hViews : null, // html screens - [main, gallery, about]
+  hFeed : null, // html video tag
+  hFlash : null, // html flash screen effect
+  hTimer : null, // html flash screen effect timer
+  init : async () => {
+    // (A1) REQUIREMENTS CHECK - MEDIA DEVICES
+    if (!"mediaDevices" in navigator) {
+      alert("Your browser does not support media devices API.");
+      return;
     }
 
-    // (B2) REQUIREMENT CHECKS & SETUP
-    else {
-      // (B2-1) REQUIREMENT - MEDIA DEVICES
-      let pass = true;
-      if (!"mediaDevices" in navigator) {
-        cam.err("Your browser does not support media devices.");
-        pass = false;
-      }
-
-      // (B2-2) REQUIREMENT - SERVICE WORKER
-      if (!"serviceWorker" in navigator) {
-        cam.err("Your browser does not support service workers.");
-        pass = false;
-      }
-
-      // (B2-3) REQUIREMENT - CACHE STORAGE
-      if (!"caches" in window) {
-        cam.err("Your browser does not support cache storage.");
-        pass = false;
-      }
-
-      // (B2-4) SERVICE WORKER
-      if (pass) {
-        navigator.serviceWorker.register("js-cam-sw.js")
-        .then((reg) => { cam.init(1); })
-        .catch((err) => {
-          cam.err("Service worker init error - " + evt.message);
-          console.error(err);
-        });
-      }
-
-      // (B2-5) CACHE STORAGE FOR PICTURES
-      if (pass) {
-        caches.open(cam.cPics)
-        .then((cache) => { cam.init(1); })
-        .catch((err) => {
-          cam.err("Failed to create cache storage.");
-          console.error(err)
-        });
-      }
-
-      // (B2-6) GET CAMERA PERMISSION
-      if (pass) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-        .then((stream) => { cam.init(1); })
-        .catch((err) => {
-          cam.err("Please attach a webcam and give app permission.");
-          console.error(err);
-        });
-      }
+    // (A2) REQUIREMENTS CHECK - CACHE STORAGE
+    if (!"caches" in window) {
+      alert("Your browser does not support cache storage.");
+      return;
     }
-  },
 
-  // (C) START CAMERA LIVE FEED & ENABLE CONTROLS
-  start : () => {
-    navigator.mediaDevices.getUserMedia({ video: true })
-    .then((stream) => {
-      cam.snapfeed = document.getElementById("cam-feed");
-      cam.snapflash = document.getElementById("cam-flash");
-      cam.snapfeed .srcObject = stream;
-      document.getElementById("cam-pics").disabled = false;
-      document.getElementById("cam-snap").disabled = false;
-    })
-    .catch((err) => {
-      alert("OPPS. Error while initializing camera.")
+    // (A3) REQUIREMENTS CHECK - SERVICE WORKER
+    if (!"serviceWorker" in navigator) {
+      alert("Your browser does not support service workers.");
+      return;
+    }
+
+    // (A4) CREATE CACHE STORAGE FOR PICTURES
+    cam.cache = await caches.open("MyPics");
+
+    // (A5) REGISTER SERVICE WORKER
+    try {
+      await navigator.serviceWorker.register("CB-worker.js");
+    } catch (err) {
+      alert("Error registering service worker");
       console.error(err);
+    }
+
+    // (A6) GET CAMERA PERMISSION + START APP
+    navigator.serviceWorker.ready.then(reg => {
+      navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        // (A6-1) CAMERA CLICK SOUND
+        // https://freesound.org/people/kwahmah_02/sounds/260138/
+        cam.aClick = new Audio("assets/click.mp3");
+  
+        // (A6-2) GET HTML + ENABLE CONTROLS
+        cam.hViews = [
+          document.getElementById("camWrap"),
+          document.getElementById("galWrap"),
+          document.getElementById("aboutWrap")
+        ];
+        cam.hFeed = document.getElementById("camFeed");
+        cam.hFlash = document.getElementById("camFlash");
+        gallery.hPics = document.getElementById("galPics");
+        gallery.hTemplate = document.getElementById("galTemplate").content;
+        cam.hFeed.srcObject = stream;
+        document.getElementById("btnPics").disabled = false;
+        document.getElementById("btnSnap").disabled = false;
+      })
+      .catch(err => {
+        alert("Error initializing camera.")
+        console.error(err);
+      });
     });
   },
 
-  // (D) SNAP!
-  snapfeed : null, // html video
-  snapflash : null, // html flash
-  snaptimer : null, // flash timer
+  // (B) TAKE A SNAPSHOT
   snap : () => {
-    // (D1) FEEDBACK
-    clearTimeout(cam.snaptimer);
-    cam.snapflash.classList.add("show");
-    cam.snaptimer = setTimeout(() => {
-      cam.snapflash.classList.remove("show");
-      clearTimeout(cam.snaptimer);
+    // (B1) FEEDBACK
+    if (!cam.aClick.ended) {
+      cam.aClick.pause();
+      cam.aClick.currentTime = 0;
+    }
+    cam.aClick.play();
+    clearTimeout(cam.hTimer);
+    cam.hFlash.classList.add("show");
+    cam.hTimer = setTimeout(() => {
+      cam.hFlash.classList.remove("show");
+      clearTimeout(cam.hTimer);
     }, 100);
 
-    // (D2) CAPTURE VIDEO FRAME TO CANVAS
+    // (B2) CAPTURE VIDEO FRAME TO CANVAS
     let canvas = document.createElement("canvas"),
         ctx = canvas.getContext("2d"),
-        vWidth = cam.snapfeed.videoWidth,
-        vHeight = cam.snapfeed.videoHeight;
-    canvas.width = vWidth;
-    canvas.height = vHeight;
-    ctx.drawImage(cam.snapfeed, 0, 0, vWidth, vHeight);
+        vw = cam.hFeed.videoWidth,
+        vh = cam.hFeed.videoHeight;
+    canvas.width = vw;
+    canvas.height = vh;
+    ctx.drawImage(cam.hFeed, 0, 0, vw, vh);
 
-    // (D3) PICTURE TO CACHE STORAGE
-    canvas.toBlob((imgBlob) => {
-      let url = URL.createObjectURL(imgBlob);
-      fetch(url).then((res) => {
-        caches.open(cam.cPics).then(async (cache) => {
-          // GET NEXT RUNNING NUMBER
-          let i = 1;
-          while (true) {
-            let check = await cache.match("pic-"+i+".png");
-            if (check) { i++; continue; }
-            else { break; }
-          }
+    // (B3) CANVAS TO CACHE STORAGE
+    canvas.toBlob(blob => {
+      let url = URL.createObjectURL(blob);
+      fetch(url).then(async (res) => {
+        // (B3-1) GET NEXT RUNNING NUMBER
+        let i = 1;
+        while (true) {
+          let check = await cam.cache.match("pic-"+i+".png");
+          if (check) { i++; continue; }
+          else { break; }
+        }
 
-          // SAVE IMAGE INTO CACHE
-          cache.put("pic-"+i+".png", res);
-          URL.revokeObjectURL(url);
-        });
-      });
-    });
-  }
-};
-
-var gallery = {
-  // (A) LIST GALLERY
-  list : () => {
-    // (A1) GET TEMPLATE + WRAPPER
-    let wrap = document.getElementById("gallery-pics"),
-        template = document.getElementById("gallery-template").content;
-
-    // (A2) DRAW IMAGES
-    wrap.innerHTML = "";
-    caches.open(cam.cPics).then((cache) => {
-      cache.keys().then((keys) => {
-        keys.forEach((req) => {
-          let item = template.cloneNode(true);
-          item.querySelector(".img").src = req.url;
-          item.querySelector(".del").onclick = () => { gallery.del(req.url); };
-          item.querySelector(".get").onclick = () => { gallery.get(req.url); };
-          wrap.appendChild(item);
-        });
+        // (B3-2) SAVE IMAGE INTO CACHE
+        cam.cache.put("pic-"+i+".png", res);
+        URL.revokeObjectURL(url);
       });
     });
   },
 
-  // (B) DELETE AN IMAGE
-  del : (pic) => { if (confirm("Delete image?")) {
-    caches.open(cam.cPics).then((cache) => {
-      cache.delete(pic).then((res) => {
-        gallery.list();
-        cb.info("Image deleted");
-      });
-    });
-  }},
-
-  // (C) DOWNLOAD AN IMAGE
-  get : (pic) => {
-    caches.match(pic)
-    .then((res) => { return res.blob(); })
-    .then((imgBlob) => {
-      let a = document.createElement("a"),
-      url = URL.createObjectURL(imgBlob);
-      a.href = url;
-      a.download = "pic.png";
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    });
+  // (C) SWITCH BETWEEN PAGES
+  // 0 = main, 1 = gallery, 2 = about
+  view : n => {
+    for (let [i,v] of Object.entries(cam.hViews)) {
+      if (i==n) { v.classList.remove("hide"); }
+      else { v.classList.add("hide"); }
+    }
+    if (n==1) { gallery.list(); }
   }
 };
 window.addEventListener("load", cam.init);

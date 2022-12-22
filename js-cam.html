@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- TITLE + CHARSET + DESCRIPTION + VIEWPORT + FAVICON -->
+    <!-- TITLE, DESC, CHARSET, VIEWPORT -->
     <title>JS Camera PWA</title>
     <meta charset="utf-8">
-    <meta name="description" content="Offline Javascript Camera App">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <meta name="description" content="Javascript Camera App">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- WEB APP & ICONS -->
     <link rel="icon" href="assets/favicon.png" type="image/png">
-
-    <!-- WEB APP MANIFEST -->
-    <!-- https://web.dev/add-manifest/ -->
-    <link rel="manifest" href="js-cam-manifest.json">
-
-    <!-- ANDROID + CHROME + APPLE + WINDOWS APP -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="white">
     <link rel="apple-touch-icon" href="assets/icon-512.png">
@@ -22,19 +18,87 @@
     <meta name="msapplication-TileImage" content="assets/icon-512.png">
     <meta name="msapplication-TileColor" content="#ffffff">
 
+    <!-- WEB APP MANIFEST -->
+    <!-- https://web.dev/add-manifest/ -->
+    <link rel="manifest" href="CB-manifest.json">
+
     <!-- STYLESHEET + JAVASCRIPT -->
     <link rel="stylesheet" href="assets/js-cam.css">
+    <script defer src="assets/js-cam-gallery.js"></script>
     <script defer src="assets/js-cam.js"></script>
-    <script defer src="assets/cb.js"></script>
   </head>
   <body>
-    <!-- (A) MAIN CONTENTS -->
-    <div id="cb-main"></div>
+    <!-- (A) MAIN CAMERA VIEW -->
+    <div id="camWrap">
+      <!-- (A1) VIDEO LIVE FEED -->
+      <video id="camFeed" autoplay></video>
 
-    <!-- (B) INFO BOX -->
-    <div id="cb-info">
-      <div id="cb-info-ico" class="mi"></div>
-      <div id="cb-info-txt"></div>
+      <!-- (A2) CAMERA CONTROLS -->
+      <div id="camControls">
+        <button id="btnPics" class="mi btn" onclick="cam.view(1)" disabled>
+          collections
+        </button>
+        <button id="btnSnap" class="mi btn" onclick="cam.snap()" disabled>
+          photo_camera
+        </button>
+        <button id="btnAbout" class="mi btn" onclick="cam.view(2)">
+          help
+        </button>
+      </div>
+
+      <!-- (A3) FLASH SCREEN -->
+      <div id="camFlash"></div>
+    </div>
+
+    <!-- (B) GALLERY -->
+    <div id="galWrap" class="hide">
+      <!-- (B1) BACK BUTTON -->
+      <div id="galHead">
+        <div id="galBack" class="mi btn" onclick="cam.view(0)">clear</div>
+      </div>
+
+      <!-- (B2) GALLERY PICTURES -->
+      <div id="galPics"></div>
+
+      <!-- (B3) GALLEY ITEMS TEMPLATE -->
+      <template id="galTemplate"><div class="pic">
+        <img class="img">
+        <div class="control">
+          <button class="mi btn btnsm del">delete</button>
+          <button class="mi btn btnsm get">file_download</button>
+        </div>
+      </div></template>
+    </div>
+
+    <!-- (X) ABOUT -->
+    <div id="aboutWrap" class="hide">
+      <div id="aboutCX" class="mi btn" onclick="cam.view(0)">
+        clear
+      </div>
+      <img src="assets/HEAD-js-cam.jpg" id="aboutHead">
+
+      <div id="aboutLinks">
+        <h3>Links & Documentation</h3>
+        <ul>
+          <li><a href="https://code-boxx.com/javascript-camera-pwa/" target="_blank">JS Camera PWA Official Webpage</a></li>
+          <li><a href="https://github.com/code-boxx/js-camera-pwa" target="_blank">JS Camera PWA GitHub</a></li>
+        </ul>
+
+        <h3>Socials</h3>
+        <ul>
+          <li><a href="https://code-boxx.com/" target="_blank">Code Boxx Webpage</a></li>
+          <li><a href="https://payhip.com/codeboxx" target="_blank">Code Boxx Store (Buy a little something to support us?)</a></li>
+          <li><a href="https://www.youtube.com/c/CodeBoxx" target="_blank">Code Boxx YouTube</a></li>
+          <li><a href="https://www.pinterest.com/codeboxx/" target="_blank">Code Boxx Pinterest</a></li>
+          <li><a href="https://github.com/code-boxx/" target="_blank">GitHub</a></li>
+          <li><a href="https://codepen.io/code-boxx" target="_blank">CodePen</a></li>
+        </ul>
+
+        <h3>Built With</h3>
+        <ul>
+          <li><a href="https://developers.google.com/fonts/docs/material_icons" target="_blank">Material Icons</a></li>
+        </ul>
+      </div>
     </div>
   </body>
 </html>
