@@ -4,9 +4,9 @@ This is a Camera Progressive Web App (PWA) made with pure HTML, CSS, Javascript.
 
 ## SCREENSHOTS
 <p float="left">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-1.jpg">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-2.jpg">
-  <img width="250" style="inline-block" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-3.jpg">
+  <img width="250" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-1.jpg">
+  <img width="250" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-2.jpg">
+  <img width="250" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-3.jpg">
 </p><br>
 
 ## REQUIREMENTS
