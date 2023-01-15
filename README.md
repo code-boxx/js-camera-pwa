@@ -2,24 +2,24 @@
 This is a Camera Progressive Web App (PWA) made with pure HTML, CSS, Javascript. Yes, it is installable and serverless - Capable of running offline completely.
 <br><br>
 
-## SCREENSHOTS
+## :camera: SCREENSHOTS
 <p float="left">
   <img width="250" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-1.jpg">
   <img width="250" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-2.jpg">
   <img width="250" src="https://github.com/code-boxx/js-camera-pwa/blob/main/assets/ss-js-cam-pwa-3.jpg">
 </p><br>
 
-## REQUIREMENTS
+## :ballot_box_with_check: REQUIREMENTS
 1) "Grade A" browser. With support for service worker, indexed database, cache storage.
 2) https:// is required for the features to work.
 3) http://localhost works fine for testing too.
 <br><br>
 
-## DOCUMENTATION
+## :bulb: DOCUMENTATION
 Please visit https://code-boxx.com/javascript-camera-pwa/ for the documentation.
 <br><br>
 
-## LICENSE
+## :newspaper: LICENSE
 Copyright by Code Boxx
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
