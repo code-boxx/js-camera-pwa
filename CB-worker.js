@@ -7,6 +7,7 @@ self.addEventListener("install", evt => {
       "assets/click.mp3",
       "assets/favicon.png",
       "assets/icon-512.png",
+      "assets/head-pwa-camera.webp",
       "assets/maticon.woff2",
       "assets/js-cam.css",
       "assets/js-cam.js",

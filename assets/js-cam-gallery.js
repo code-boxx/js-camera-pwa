@@ -4,15 +4,14 @@ var gallery = {
   hTemplate : null, // html image item template
   list : () => {
     gallery.hPics.innerHTML = "";
-    cam.cache.keys().then(keys => {
-      keys.forEach(req => {
-        let item = gallery.hTemplate.cloneNode(true);
-        item.querySelector(".img").src = req.url;
-        item.querySelector(".del").onclick = () => gallery.del(req.url);
-        item.querySelector(".get").onclick = () => gallery.get(req.url);
-        gallery.hPics.appendChild(item);
-      });
-    });
+    cam.cache.keys().then(keys => keys.forEach(req => {
+      let item = gallery.hTemplate.cloneNode(true);
+      item.querySelector(".img").src = req.url;
+      item.querySelector(".del").onclick = () => gallery.del(req.url);
+      item.querySelector(".get").onclick = () => gallery.get(req.url);
+      item.querySelector(".share").onclick = () => gallery.share(req.url);
+      gallery.hPics.appendChild(item);
+    }));
   },
 
   // (B) DELETE AN IMAGE
@@ -21,7 +20,7 @@ var gallery = {
   }},
 
   // (C) DOWNLOAD AN IMAGE
-  get : pic => {
+  get : pic => 
     cam.cache.match(pic)
     .then(res => res.blob())
     .then(blob => {
@@ -32,6 +31,16 @@ var gallery = {
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-    });
+    }),
+
+  // (D) SHARE AN IMAGE
+  share : pic => {
+    cam.cache.match(pic)
+    .then(res => res.blob())
+    .then(blob => navigator.share({
+      files: [new File([blob], pic, { type: blob.type })],
+      title: new URL(pic).pathname.replace(/^.*[\\\/]/, ""),
+      text: "JSCamera Share Picture"
+    }))
   }
 };

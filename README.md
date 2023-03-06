@@ -19,6 +19,10 @@ This is a Camera Progressive Web App (PWA) made with pure HTML, CSS, Javascript.
 Please visit https://code-boxx.com/javascript-camera-pwa/ for the documentation.
 <br><br>
 
+## :star: SUPPORT
+Like this project? Just give it a star. That will indirectly help grow my blog a little bit. :wink:
+<br><br>
+
 ## :newspaper: LICENSE
 Copyright by Code Boxx
 

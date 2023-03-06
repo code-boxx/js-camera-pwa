@@ -1,9 +1,9 @@
 var cam = {
   // (A) INIT APP
-  cache : null, // pictures cache storage
+  cache : null,  // pictures cache storage
   aClick : null, // click sound
   hViews : null, // html screens - [main, gallery, about]
-  hFeed : null, // html video tag
+  hFeed : null,  // html video tag
   hFlash : null, // html flash screen effect
   hTimer : null, // html flash screen effect timer
   init : async () => {
