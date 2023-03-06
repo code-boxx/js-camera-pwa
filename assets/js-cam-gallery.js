@@ -34,7 +34,7 @@ var gallery = {
     }),
 
   // (D) SHARE AN IMAGE
-  share : pic => {
+  share : pic => 
     cam.cache.match(pic)
     .then(res => res.blob())
     .then(blob => navigator.share({
@@ -42,5 +42,4 @@ var gallery = {
       title: new URL(pic).pathname.replace(/^.*[\\\/]/, ""),
       text: "JSCamera Share Picture"
     }))
-  }
 };
